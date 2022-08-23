@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { usuario } from '../models';
+import { usuario } from '../models/user';
 
 // Un servicio sí o sí requiere un decorador injectable
 @Injectable({

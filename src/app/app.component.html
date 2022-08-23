@@ -1,6 +1,30 @@
 <p-menubar [model]="items"></p-menubar>
 <p-button label="click Home" (click)="mostrar()"></p-button>
 
+<p-card header="Usuarios" [style]="{'width': '25rem', 'margin-bottom': '2em'}">
+    <div *ngFor="let usuarios of usuarios">
+        <h3>Nombre:</h3>
+        <p>{{usuarios.name}}</p>
+        <h3>Contraseña:</h3>
+        <p>{{usuarios.password}}</p>
+        <hr>
+    </div>
+</p-card>
+
+<p-card header="Libros" [style]="{'width': '25rem', 'margin-bottom': '2em'}">
+    <div *ngFor="let libros of libros">
+        <h3>Nombre:</h3>
+        <p>{{libros.nombre}}</p>
+        <h3>Autor:</h3>
+        <p>{{libros.autor}}</p>
+        <h3>Editorial:</h3>
+        <p>{{libros.editorial}}</p>
+        <h3>ISBN:</h3>
+        <p>{{libros.ISBN}}</p>
+        <hr>
+    </div>
+</p-card>
+
 <router-outlet></router-outlet>
 
 <!-- ctrl + k + c -->

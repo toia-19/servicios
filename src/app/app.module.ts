@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { AngularFireModule } from '@angular/fire/compat';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -12,21 +13,25 @@ import { AlertaService } from './servicios/alerta.service';
 import { UsuariosService } from './servicios/usuarios.service';
 import { CarouselModule } from 'primeng/carousel'
 import { CarouselComponent } from './components/carousel/carousel.component';
+import { environment } from 'src/environments/environment';
+import { CardModule } from 'primeng/card';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
     AdminComponent,
-    CarouselComponent
+    CarouselComponent,
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,
+    AngularFireModule.initializeApp(environment.firebaseConfig),
     ButtonModule,
     MenubarModule,
-    CarouselModule
+    CarouselModule,
+    CardModule
   ],
   providers: [AlertaService, UsuariosService], // se patentan los servicios
   bootstrap: [AppComponent]

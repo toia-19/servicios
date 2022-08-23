@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { AlertaService } from './servicios/alerta.service';
 import { UsuariosService } from './servicios/usuarios.service';
 import { MenuItem } from 'primeng/api';
+import { LibrosService } from './servicios/libros.service';
+import { Libro } from './models/libro';
 
 @Component({
   selector: 'app-root',
@@ -13,10 +15,16 @@ export class AppComponent implements OnInit {
   title = 'servicios';
   items: MenuItem[] = [];
   adminVisible = false;
+  libros: Libro[];
 
   // se inyectaron y podemos acceder a las partes públicas del servicio
-  constructor(private servicioAlerta:AlertaService, private servicioUsuarios:UsuariosService){
+  constructor(
+      private servicioAlerta:AlertaService, 
+      private servicioUsuarios:UsuariosService,
+      private servicioLibros:LibrosService
+    ){
   }
+
 
   // Servicio Alerta
   mostrar(){
@@ -40,6 +48,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     console.log(this.usuarios);
+    // Nav
     this.items = [
       {
         label: "Home",
@@ -53,5 +62,7 @@ export class AppComponent implements OnInit {
         visible: this.adminVisible
       }
     ]
+    // Servicio Libros
+    console.log(this.servicioLibros.obtenerLibros().subscribe(libro=>this.libros=libro));
   }
 }
