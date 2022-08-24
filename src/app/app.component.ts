@@ -17,14 +17,13 @@ export class AppComponent implements OnInit {
   adminVisible = false;
   libros: Libro[];
 
-  // se inyectaron y podemos acceder a las partes públicas del servicio
+  // Se inyectaron y podemos acceder a las partes públicas del servicio
   constructor(
       private servicioAlerta:AlertaService, 
       private servicioUsuarios:UsuariosService,
       private servicioLibros:LibrosService
     ){
   }
-
 
   // Servicio Alerta
   mostrar(){
@@ -40,7 +39,7 @@ export class AppComponent implements OnInit {
       if(usuario.name == "Diego"){
         if(usuario.password == "tapi412"){
           this.adminVisible = true;
-          this.ngOnInit(); // necesario para refrescar
+          this.ngOnInit(); // Necesario para refrescar
         }
       }
     })
@@ -64,5 +63,24 @@ export class AppComponent implements OnInit {
     ]
     // Servicio Libros
     console.log(this.servicioLibros.obtenerLibros().subscribe(libro=>this.libros=libro));
+  }
+
+  // Servicio Libros
+  agregarLibro(){
+    let nuevoLibro:Libro = {
+      nombre: "El Gato con Botas",
+      autor: "Charles Perrault",
+      editorial: "Nordica Libros",
+      ISBN: 8492683678,
+      ID: ""
+    }
+
+    this.servicioLibros.crearLibros(nuevoLibro).then((libro)=>{
+      alert("Ha agregado un nuevo libro con éxito :)");
+    })
+
+    .catch((error)=>{
+      alert("Hubo un error al cargar un nuevo libro :( \n"+error)
+    })
   }
 }

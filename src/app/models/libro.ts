@@ -3,4 +3,5 @@ export interface Libro {
     autor: string;
     editorial: string;
     ISBN: number;
+    ID: string;
 }
