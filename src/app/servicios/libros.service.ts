@@ -33,4 +33,8 @@ export class LibrosService {
       // los datos de try se envian a la BD; si hay un error catch lo captura, verifica y notifica
     })
   }
+
+  modificarLibro(ID:string, nuevaData:Libro){
+    return this.db.collection("libros").doc(ID).update(nuevaData)
+  }
 }

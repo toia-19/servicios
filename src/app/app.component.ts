@@ -4,6 +4,7 @@ import { UsuariosService } from './servicios/usuarios.service';
 import { MenuItem } from 'primeng/api';
 import { LibrosService } from './servicios/libros.service';
 import { Libro } from './models/libro';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-root',
@@ -13,31 +14,49 @@ import { Libro } from './models/libro';
 
 export class AppComponent implements OnInit {
   title = 'servicios';
+  // Varibles
   items: MenuItem[] = [];
   adminVisible = false;
-  libros: Libro[];
+  libros: Libro[]; // Colección
+  modalVisible: boolean = false;
+  textoBoton: string;
+  libroSeleccionado: Libro;
+
+  // Formulario de Libro (creamos un grupo, desde html se guarda en ts y viceversa)
+  libro = new FormGroup({
+    nombre: new FormControl("", Validators.required),
+    autor: new FormControl("", Validators.required),
+    editorial: new FormControl("", Validators.required),
+    ISBN: new FormControl(0, Validators.required)
+  })
 
   // Se inyectaron y podemos acceder a las partes públicas del servicio
   constructor(
-      private servicioAlerta:AlertaService, 
-      private servicioUsuarios:UsuariosService,
-      private servicioLibros:LibrosService
-    ){
+    private servicioAlerta: AlertaService,
+    private servicioUsuarios: UsuariosService,
+    private servicioLibros: LibrosService
+  ) {
   }
 
   // Servicio Alerta
-  mostrar(){
+  mostrar() {
     this.servicioAlerta.mostrar_alerta("Estoy siendo llamado desde app");
     this.verificarUsuario();
+  }
+
+  // Mostrar Dialogo
+  mostrarDialogo() {
+    this.textoBoton = "Agregar Libro";
+    this.modalVisible = true;
   }
 
   // Servicio Usuario
   usuarios = this.servicioUsuarios.getUsers();
 
-  verificarUsuario(){
-    this.usuarios.forEach(usuario =>{
-      if(usuario.name == "Diego"){
-        if(usuario.password == "tapi412"){
+  verificarUsuario() {
+    this.usuarios.forEach(usuario => {
+      if (usuario.name == "Diego") {
+        if (usuario.password == "tapi412") {
           this.adminVisible = true;
           this.ngOnInit(); // Necesario para refrescar
         }
@@ -45,9 +64,9 @@ export class AppComponent implements OnInit {
     })
   }
 
+  // Nav
   ngOnInit(): void {
     console.log(this.usuarios);
-    // Nav
     this.items = [
       {
         label: "Home",
@@ -62,25 +81,85 @@ export class AppComponent implements OnInit {
       }
     ]
     // Servicio Libros
-    console.log(this.servicioLibros.obtenerLibros().subscribe(libro=>this.libros=libro));
+    console.log(this.servicioLibros.obtenerLibros().subscribe(libro => this.libros = libro));
   }
 
   // Servicio Libros
-  agregarLibro(){
-    let nuevoLibro:Libro = {
-      nombre: "El Gato con Botas",
-      autor: "Charles Perrault",
-      editorial: "Nordica Libros",
-      ISBN: 8492683678,
-      ID: ""
+  agregarLibro() {
+    if (this.libro.valid) {
+      let nuevoLibro: Libro = {
+        nombre: this.libro.value.nombre!,
+        autor: this.libro.value.autor!,
+        editorial: this.libro.value.editorial!,
+        ISBN: this.libro.value.ISBN!,
+        ID: ""
+      }
+      this.servicioLibros.crearLibros(nuevoLibro).then((libro) => {
+        alert("Ha agregado un nuevo libro con éxito :)");
+      })
+        .catch((error) => {
+          alert("Hubo un error al cargar un nuevo libro :( \n" + error);
+        })
+    } else {
+      alert("El formulario no está cargado");
+    }
+  }
+
+  editarLibro() {
+    let datos: Libro = {
+      nombre: this.libro.value.nombre!,
+      autor: this.libro.value.autor!,
+      editorial: this.libro.value.editorial!,
+      ISBN: this.libro.value.ISBN!,
+      ID: this.libroSeleccionado.ID
     }
 
-    this.servicioLibros.crearLibros(nuevoLibro).then((libro)=>{
-      alert("Ha agregado un nuevo libro con éxito :)");
+    this.servicioLibros.modificarLibro(this.libroSeleccionado.ID,datos).then((libro) => {
+      alert("El libro fue modificado con éxito :)");
     })
+      .catch((error) => {
+        alert("No se pudo modificar el libro :( \n" + error);
+      })
+  }
 
-    .catch((error)=>{
-      alert("Hubo un error al cargar un nuevo libro :( \n"+error)
+  mostrarEditar(libroSeleccionado: Libro) {
+    this.textoBoton = "Editar Libro";
+    this.modalVisible = true;
+    this.libroSeleccionado = libroSeleccionado;
+
+    this.libro.setValue({
+      nombre: libroSeleccionado.nombre,
+      autor: libroSeleccionado.autor,
+      editorial: libroSeleccionado.editorial,
+      ISBN: libroSeleccionado.ISBN
     })
   }
+
+  cargarDatos() {
+    if (this.textoBoton == "Agregar Libro") {
+      this.agregarLibro();
+    } else if (this.textoBoton == "Editar Libro") {
+      this.editarLibro();
+    }
+    this.modalVisible = false;
+    this.libro.reset();
+  }
+
+  // Comentamos el agregar libros de forma local
+
+  // let nuevoLibro:Libro = {
+  //   nombre: "El Gato con Botas",
+  //   autor: "Charles Perrault",
+  //   editorial: "Nordica Libros",
+  //   ISBN: 8492683678,
+  //   ID: ""
+  // }
+
+  // this.servicioLibros.crearLibros(nuevoLibro).then((libro)=>{
+  //   alert("Ha agregado un nuevo libro con éxito :)");
+  // })
+
+  // .catch((error)=>{
+  //   alert("Hubo un error al cargar un nuevo libro :( \n"+error)
+  // })
 }

@@ -1,6 +1,7 @@
 <p-menubar [model]="items"></p-menubar>
 <p-button label="click Home" (click)="mostrar()"></p-button>
 
+<!-- Lista Usuario -->
 <p-card header="Usuarios" [style]="{'width': '25rem', 'margin-bottom': '2em'}">
     <div *ngFor="let usuarios of usuarios">
         <h3>Nombre:</h3>
@@ -11,6 +12,7 @@
     </div>
 </p-card>
 
+<!-- Lista Libro -->
 <p-card header="Libros" [style]="{'width': '25rem', 'margin-bottom': '2em'}">
     <div *ngFor="let libros of libros">
         <h3>Nombre:</h3>
@@ -21,11 +23,40 @@
         <p>{{libros.editorial}}</p>
         <h3>ISBN:</h3>
         <p>{{libros.ISBN}}</p>
+
+        <!-- Editar Libro -->
+        <button pButton class="p-button-info" icon="pi pi-pencil" (click)="mostrarEditar(libros)"></button>
+
+        <!-- Eliminar Libro -->
+        <button pButton class="p-button-danger" icon="pi pi-trash"></button>
         <hr>
     </div>
+    <!-- Agregar Libro -->
+    <button pButton class="p-button-success" label="{{textoBoton}}" (click)="mostrarDialogo()"></button>
 </p-card>
 
-<button pButton class="p-button-success" label="Agregar Libro" (click)="agregarLibro()"></button>
+<p-dialog header="{{textoBoton}}" [(visible)]="modalVisible">
+    <form [formGroup]="libro">
+        <span class="p-float-label">
+            <input id="float-input" type="text" pInputText formControlName="nombre"> 
+            <label for="float-input">Nombre</label>
+        </span>
+        <span class="p-float-label">
+            <input id="float-input" type="text" pInputText formControlName="autor"> 
+            <label for="float-input">Autor</label>
+        </span>
+        <span class="p-float-label">
+            <input id="float-input" type="text" pInputText formControlName="editorial"> 
+            <label for="float-input">Editorial</label>
+        </span>
+        <span class="p-float-label">
+            <input id="float-input" type="number" pInputText formControlName="ISBN"> 
+            <label for="float-input">ISBN</label>
+        </span>
+    </form>
+    <!-- Enviar nuevo libro -->
+    <button pButton class="p-button-success" icon="pi pi-check" (click)="agregarLibro()"></button>
+</p-dialog>
 
 <router-outlet></router-outlet>
 

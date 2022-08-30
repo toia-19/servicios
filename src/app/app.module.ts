@@ -15,6 +15,9 @@ import { CarouselModule } from 'primeng/carousel'
 import { CarouselComponent } from './components/carousel/carousel.component';
 import { environment } from 'src/environments/environment';
 import { CardModule } from 'primeng/card';
+import { DialogModule } from 'primeng/dialog';
+import { InputTextModule } from 'primeng/inputtext';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -31,7 +34,10 @@ import { CardModule } from 'primeng/card';
     ButtonModule,
     MenubarModule,
     CarouselModule,
-    CardModule
+    CardModule,
+    DialogModule,
+    InputTextModule,
+    ReactiveFormsModule
   ],
   providers: [AlertaService, UsuariosService], // se patentan los servicios
   bootstrap: [AppComponent]
