@@ -21,6 +21,8 @@ export class AppComponent implements OnInit {
   modalVisible: boolean = false;
   textoBoton: string;
   libroSeleccionado: Libro;
+  eliminarVisible: boolean = false;
+  imagen: string;
 
   // Formulario de Libro (creamos un grupo, desde html se guarda en ts y viceversa)
   libro = new FormGroup({
@@ -50,7 +52,7 @@ export class AppComponent implements OnInit {
     this.modalVisible = true;
   }
 
-  // Servicio Usuario
+  // Servicio USUARIOS
   usuarios = this.servicioUsuarios.getUsers();
 
   verificarUsuario() {
@@ -84,7 +86,8 @@ export class AppComponent implements OnInit {
     console.log(this.servicioLibros.obtenerLibros().subscribe(libro => this.libros = libro));
   }
 
-  // Servicio Libros
+  // Servicio LIBROS
+  // AGREGAR nuevo libro
   agregarLibro() {
     if (this.libro.valid) {
       let nuevoLibro: Libro = {
@@ -105,6 +108,7 @@ export class AppComponent implements OnInit {
     }
   }
 
+  // EDITAR un libro
   editarLibro() {
     let datos: Libro = {
       nombre: this.libro.value.nombre!,
@@ -135,6 +139,7 @@ export class AppComponent implements OnInit {
     })
   }
 
+  // DATOS en botones
   cargarDatos() {
     if (this.textoBoton == "Agregar Libro") {
       this.agregarLibro();
@@ -143,6 +148,37 @@ export class AppComponent implements OnInit {
     }
     this.modalVisible = false;
     this.libro.reset();
+  }
+
+  // ELIMINAR un libro
+  mostrarEliminar(libroSeleccionado: Libro){
+    this.eliminarVisible = true;
+    this.libroSeleccionado = libroSeleccionado;
+  }
+
+  borrarLibro(){
+    this.servicioLibros.eliminarLibro(this.libroSeleccionado.ID).then((respuesta) => {
+      alert("El libro ha sido eliminado con éxito :)");
+    })
+    .catch((error) => {
+      alert("El libro no se ha podido eliminar :( \n"+error);
+    })
+    this.eliminarVisible = false;
+  }
+
+  // CARGAR IMAGEN
+  cargarImagen(event:any){
+    let archivo = event.target.files[0];
+    let reader = new FileReader(); // permite que apps web lean los ficheros
+    if(archivo != undefined){
+      reader.readAsDataURL(archivo)
+      reader.onloadend = () => {
+        let url = reader.result;
+        if(url != null){
+          this.imagen = url.toString(); // pasamos la URL a tipo imagen
+        }
+      }
+    }
   }
 
   // Comentamos el agregar libros de forma local

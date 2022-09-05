@@ -22,9 +22,9 @@ export class LibrosService {
   crearLibros(nuevoLibro:Libro){
     return new Promise(async(resolve,reject)=>{
       try{
-        const id = this.db.createId();
-        nuevoLibro.ID = id;
-        const resultado = this.libros.doc(id).set(nuevoLibro);
+        const ID = this.db.createId();
+        nuevoLibro.ID = ID;
+        const resultado = this.libros.doc(ID).set(nuevoLibro);
         resolve(resultado); // si el resultado es con exito se devuelve en resolve
       }
       catch(error){
@@ -36,5 +36,17 @@ export class LibrosService {
 
   modificarLibro(ID:string, nuevaData:Libro){
     return this.db.collection("libros").doc(ID).update(nuevaData)
+  }
+
+  eliminarLibro(ID:string){
+    return new Promise(async(resolve,reject)=>{
+      try{
+        const respuesta = this.libros.doc(ID).delete();
+        resolve(respuesta);
+      }
+      catch(error){
+        reject(error);
+      }
+    })
   }
 }

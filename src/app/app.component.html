@@ -28,13 +28,14 @@
         <button pButton class="p-button-info" icon="pi pi-pencil" (click)="mostrarEditar(libros)"></button>
 
         <!-- Eliminar Libro -->
-        <button pButton class="p-button-danger" icon="pi pi-trash"></button>
+        <button pButton class="p-button-danger" icon="pi pi-trash" (click)="mostrarEliminar(libros)"></button>
         <hr>
     </div>
     <!-- Agregar Libro -->
     <button pButton class="p-button-success" label="{{textoBoton}}" (click)="mostrarDialogo()"></button>
 </p-card>
 
+<!-- Dialogo de Confirmación -->
 <p-dialog header="{{textoBoton}}" [(visible)]="modalVisible">
     <form [formGroup]="libro">
         <span class="p-float-label">
@@ -53,9 +54,29 @@
             <input id="float-input" type="number" pInputText formControlName="ISBN"> 
             <label for="float-input">ISBN</label>
         </span>
+        <span class="p-float-label">
+            <img [src]="imagen" alt="Aún no hay imagen">
+            <!--
+                imagen/* para aceptar cualquier tipo de imagen 
+                .jpg .png .gif para especificar el tipo
+            -->
+            <input type="file" pInputText accept="imagen/*" (change)="cargarImagen($event)">
+        </span>
     </form>
     <!-- Enviar nuevo libro -->
     <button pButton class="p-button-success" icon="pi pi-check" (click)="agregarLibro()"></button>
+</p-dialog>
+
+<!-- Dialogo Advertencia para Eliminar -->
+<p-dialog header="¡¡¡Advertencia!!!" [(visible)]="eliminarVisible">
+    <p>
+        ¿Estás seguro de eliminar este libro?<br>
+    </p>
+    <h2 style="text-align: center;">
+        {{libroSeleccionado.nombre}}
+    </h2>
+    <button pButton class="p-button-success" icon="pi pi-check" (click)="borrarLibro()"></button>
+    <button pButton class="p-button-danger" icon="pi pi-times" (click)="eliminarVisible = false"></button>
 </p-dialog>
 
 <router-outlet></router-outlet>
