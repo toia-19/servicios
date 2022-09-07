@@ -2,19 +2,18 @@
 <p-button label="click Home" (click)="mostrar()"></p-button>
 
 <!-- Lista Usuario -->
-<p-card header="Usuarios" [style]="{'width': '25rem', 'margin-bottom': '2em'}">
-    <div *ngFor="let usuarios of usuarios">
+<p-card header="Usuarios">
+    <div *ngFor="let usuarios of usuarios" class="card">
         <h3>Nombre:</h3>
         <p>{{usuarios.name}}</p>
         <h3>Contraseña:</h3>
         <p>{{usuarios.password}}</p>
-        <hr>
     </div>
 </p-card>
 
 <!-- Lista Libro -->
-<p-card header="Libros" [style]="{'width': '25rem', 'margin-bottom': '2em'}">
-    <div *ngFor="let libros of libros">
+<p-card header="Libros">
+    <div *ngFor="let libros of libros" class="card">
         <h3>Nombre:</h3>
         <p>{{libros.nombre}}</p>
         <h3>Autor:</h3>
@@ -23,13 +22,13 @@
         <p>{{libros.editorial}}</p>
         <h3>ISBN:</h3>
         <p>{{libros.ISBN}}</p>
+        <img [src]="libros.img" alt="" width="100px">
 
         <!-- Editar Libro -->
         <button pButton class="p-button-info" icon="pi pi-pencil" (click)="mostrarEditar(libros)"></button>
 
         <!-- Eliminar Libro -->
         <button pButton class="p-button-danger" icon="pi pi-trash" (click)="mostrarEliminar(libros)"></button>
-        <hr>
     </div>
     <!-- Agregar Libro -->
     <button pButton class="p-button-success" label="{{textoBoton}}" (click)="mostrarDialogo()"></button>
@@ -53,6 +52,10 @@
         <span class="p-float-label">
             <input id="float-input" type="number" pInputText formControlName="ISBN"> 
             <label for="float-input">ISBN</label>
+        </span>
+        <span class="p-float-label">
+            <input id="float-input" type="text" pInputText formControlName="img"> 
+            <label for="float-input">Imagen</label>
         </span>
         <span class="p-float-label">
             <img [src]="imagen" alt="Aún no hay imagen">

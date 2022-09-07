@@ -4,4 +4,5 @@ export interface Libro {
     editorial: string;
     ISBN: number;
     ID: string;
+    img: string;
 }

@@ -29,7 +29,8 @@ export class AppComponent implements OnInit {
     nombre: new FormControl("", Validators.required),
     autor: new FormControl("", Validators.required),
     editorial: new FormControl("", Validators.required),
-    ISBN: new FormControl(0, Validators.required)
+    ISBN: new FormControl(0, Validators.required),
+    img: new FormControl("", Validators.required)
   })
 
   // Se inyectaron y podemos acceder a las partes públicas del servicio
@@ -95,7 +96,8 @@ export class AppComponent implements OnInit {
         autor: this.libro.value.autor!,
         editorial: this.libro.value.editorial!,
         ISBN: this.libro.value.ISBN!,
-        ID: ""
+        ID: "",
+        img: this.libro.value.img!
       }
       this.servicioLibros.crearLibros(nuevoLibro).then((libro) => {
         alert("Ha agregado un nuevo libro con éxito :)");
@@ -115,7 +117,8 @@ export class AppComponent implements OnInit {
       autor: this.libro.value.autor!,
       editorial: this.libro.value.editorial!,
       ISBN: this.libro.value.ISBN!,
-      ID: this.libroSeleccionado.ID
+      ID: this.libroSeleccionado.ID,
+      img: this.libroSeleccionado.img!
     }
 
     this.servicioLibros.modificarLibro(this.libroSeleccionado.ID,datos).then((libro) => {
@@ -135,7 +138,8 @@ export class AppComponent implements OnInit {
       nombre: libroSeleccionado.nombre,
       autor: libroSeleccionado.autor,
       editorial: libroSeleccionado.editorial,
-      ISBN: libroSeleccionado.ISBN
+      ISBN: libroSeleccionado.ISBN,
+      img: libroSeleccionado.img
     })
   }
 
