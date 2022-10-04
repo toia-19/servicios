@@ -4,6 +4,7 @@
     </ng-template>
 </p-carousel>
 
+<!-- Muestra un cartel con lo que se escriba en "Dato a Enviar" -->
 <label>Dato a enviar: <input #enviarItem></label>
-<button pButton label="Iniciar sesión" class="p-button-succes p-button-rounded" 
+<button pButton label="Enviar" class="p-button-succes p-button-rounded" 
 (click)="agregarItem(enviarItem.value)"></button>

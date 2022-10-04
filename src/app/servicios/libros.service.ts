@@ -19,12 +19,13 @@ export class LibrosService {
     return this.libros.snapshotChanges().pipe(map(action=>action.map(a=>a.payload.doc.data())));
   }
 
-  crearLibros(nuevoLibro:Libro){
-    return new Promise(async(resolve,reject)=>{
+  crearLibros(nuevoLibro:Libro, url: string){
+    return new Promise(async (resolve,reject) => {
       try{
         const ID = this.db.createId();
         nuevoLibro.ID = ID;
-        const resultado = this.libros.doc(ID).set(nuevoLibro);
+        nuevoLibro.img = url;
+        const resultado = await this.libros.doc(ID).set(nuevoLibro);
         resolve(resultado); // si el resultado es con exito se devuelve en resolve
       }
       catch(error){

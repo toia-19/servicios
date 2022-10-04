@@ -4,3 +4,11 @@
     height: 5%;
     display: inline-block;
 }
+
+.formulario{
+    margin: 10px;
+}
+
+.p-float-label{
+    margin: 30px;
+}

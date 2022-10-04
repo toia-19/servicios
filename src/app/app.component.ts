@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { AlertaService } from './servicios/alerta.service';
-import { UsuariosService } from './servicios/usuarios.service';
+// import { UsuariosService } from './servicios/usuarios.service';
 import { MenuItem } from 'primeng/api';
 import { LibrosService } from './servicios/libros.service';
 import { Libro } from './models/libro';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { StorageService } from './servicios/storage.service';
 
 @Component({
   selector: 'app-root',
@@ -23,6 +24,7 @@ export class AppComponent implements OnInit {
   libroSeleccionado: Libro;
   eliminarVisible: boolean = false;
   imagen: string;
+  nombreImagen: string;
 
   // Formulario de Libro (creamos un grupo, desde html se guarda en ts y viceversa)
   libro = new FormGroup({
@@ -36,8 +38,9 @@ export class AppComponent implements OnInit {
   // Se inyectaron y podemos acceder a las partes públicas del servicio
   constructor(
     private servicioAlerta: AlertaService,
-    private servicioUsuarios: UsuariosService,
-    private servicioLibros: LibrosService
+    // private servicioUsuarios: UsuariosService,
+    private servicioLibros: LibrosService,
+    private servicioStorage: StorageService
   ) {
   }
 
@@ -54,22 +57,22 @@ export class AppComponent implements OnInit {
   }
 
   // Servicio USUARIOS
-  usuarios = this.servicioUsuarios.getUsers();
+  // usuarios = this.servicioUsuarios.getUsers();
 
   verificarUsuario() {
-    this.usuarios.forEach(usuario => {
-      if (usuario.name == "Diego") {
-        if (usuario.password == "tapi412") {
-          this.adminVisible = true;
-          this.ngOnInit(); // Necesario para refrescar
-        }
-      }
-    })
+    // this.usuarios.forEach(usuario => {
+    //   if (usuario.name == "Diego") {
+    //     if (usuario.password == "tapi412") {
+    //       this.adminVisible = true;
+    //       this.ngOnInit(); // Necesario para refrescar
+    //     }
+    //   }
+    // })
   }
 
   // Nav
   ngOnInit(): void {
-    console.log(this.usuarios);
+    // console.log(this.usuarios);
     this.items = [
       {
         label: "Home",
@@ -80,16 +83,16 @@ export class AppComponent implements OnInit {
         label: "Admin",
         icon: "pi pi-user",
         routerLink: "/admin",
-        visible: this.adminVisible
+        // visible: this.adminVisible
       }
     ]
     // Servicio Libros
-    console.log(this.servicioLibros.obtenerLibros().subscribe(libro => this.libros = libro));
+    this.servicioLibros.obtenerLibros().subscribe(libro => this.libros = libro);
   }
 
   // Servicio LIBROS
   // AGREGAR nuevo libro
-  agregarLibro() {
+  async agregarLibro() {
     if (this.libro.valid) {
       let nuevoLibro: Libro = {
         nombre: this.libro.value.nombre!,
@@ -99,16 +102,29 @@ export class AppComponent implements OnInit {
         ID: "",
         img: this.libro.value.img!
       }
-      this.servicioLibros.crearLibros(nuevoLibro).then((libro) => {
-        alert("Ha agregado un nuevo libro con éxito :)");
-      })
-        .catch((error) => {
-          alert("Hubo un error al cargar un nuevo libro :( \n" + error);
-        })
+
+      this.servicioStorage.subirImagen(this.nombreImagen, this.imagen)
+      .then(
+        async res => {
+          this.servicioStorage.obtenerUrlImagen(res)
+          .then(
+            async url => {
+              await this.servicioLibros.crearLibros(nuevoLibro, url!)
+              .then(libro => {
+                alert("Ha agregado un nuevo libro con éxito :)");
+              })
+              .catch(error => {
+                alert("Hubo un error al cargar un nuevo libro :( \n" + error);
+              })
+            }
+          )
+        }
+      )
     } else {
       alert("El formulario no está cargado");
     }
   }
+
 
   // EDITAR un libro
   editarLibro() {
@@ -121,12 +137,13 @@ export class AppComponent implements OnInit {
       img: this.libroSeleccionado.img!
     }
 
-    this.servicioLibros.modificarLibro(this.libroSeleccionado.ID,datos).then((libro) => {
+    this.servicioLibros.modificarLibro(this.libroSeleccionado.ID, datos)
+    .then(libro => {
       alert("El libro fue modificado con éxito :)");
     })
-      .catch((error) => {
-        alert("No se pudo modificar el libro :( \n" + error);
-      })
+    .catch(error => {
+      alert("No se pudo modificar el libro :( \n" + error);
+    })
   }
 
   mostrarEditar(libroSeleccionado: Libro) {
@@ -161,45 +178,30 @@ export class AppComponent implements OnInit {
   }
 
   borrarLibro(){
-    this.servicioLibros.eliminarLibro(this.libroSeleccionado.ID).then((respuesta) => {
+    this.servicioLibros.eliminarLibro(this.libroSeleccionado.ID)
+    .then(respuesta => {
       alert("El libro ha sido eliminado con éxito :)");
     })
-    .catch((error) => {
-      alert("El libro no se ha podido eliminar :( \n"+error);
+    .catch(error => {
+      alert("El libro no se ha podido eliminar :( \n" + error);
     })
     this.eliminarVisible = false;
   }
 
-  // CARGAR IMAGEN
-  cargarImagen(event:any){
+  // CARGAR IMAGEN - muestra en pantalla
+  cargarImagen(event: any){
     let archivo = event.target.files[0];
     let reader = new FileReader(); // permite que apps web lean los ficheros
-    if(archivo != undefined){
+
+    if (archivo != undefined) {
       reader.readAsDataURL(archivo)
       reader.onloadend = () => {
         let url = reader.result;
-        if(url != null){
+        if (url != null) {
+          this.nombreImagen = archivo.name;
           this.imagen = url.toString(); // pasamos la URL a tipo imagen
         }
       }
     }
   }
-
-  // Comentamos el agregar libros de forma local
-
-  // let nuevoLibro:Libro = {
-  //   nombre: "El Gato con Botas",
-  //   autor: "Charles Perrault",
-  //   editorial: "Nordica Libros",
-  //   ISBN: 8492683678,
-  //   ID: ""
-  // }
-
-  // this.servicioLibros.crearLibros(nuevoLibro).then((libro)=>{
-  //   alert("Ha agregado un nuevo libro con éxito :)");
-  // })
-
-  // .catch((error)=>{
-  //   alert("Hubo un error al cargar un nuevo libro :( \n"+error)
-  // })
 }

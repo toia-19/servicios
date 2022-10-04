@@ -19,6 +19,13 @@ import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { ReactiveFormsModule } from '@angular/forms';
 
+// Servicios
+import { LibrosService } from './servicios/libros.service';
+import { StorageService } from './servicios/storage.service';
+
+// Guardia
+import { LoginService } from './servicios/login.service';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -39,7 +46,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     InputTextModule,
     ReactiveFormsModule
   ],
-  providers: [AlertaService, UsuariosService], // se patentan los servicios
+  providers: [AlertaService, UsuariosService, LibrosService, StorageService, LoginService], // se patentan los servicios
   bootstrap: [AppComponent]
 })
 export class AppModule { }
